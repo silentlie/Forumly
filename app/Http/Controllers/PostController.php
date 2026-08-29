@@ -14,13 +14,30 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::with(['user', 'community'])
-            ->latest()
-            ->get();
+        $query = Post::with(['user', 'community']);
 
-        return view('posts.index', compact('posts'));
+        if ($request->filled('search')) {
+            $query->where(function ($query) use ($request) {
+                $query->where('title', 'like', '%' . $request->search . '%')
+                    ->orWhere('body', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        if ($request->filled('community')) {
+            $query->where('community_id', $request->community);
+        }
+
+        $posts = $query
+            ->latest()
+            // ! Hardcoded pagination value, maybe moving to a config file or query parameter
+            ->paginate(10)
+            ->withQueryString();
+
+        $communities = Community::orderBy('name')->get();
+
+        return view('posts.index', compact('posts', 'communities'));
     }
 
     /**
@@ -87,7 +104,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        $post->load(['user', 'community']);
+        $post->load(['user', 'community', 'comments.user']);
 
         return view('posts.show', compact('post'));
     }

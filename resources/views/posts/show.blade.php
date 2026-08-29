@@ -58,5 +58,49 @@
                 @endcan
             </div>
         </article>
+
+        <section class="mt-8">
+            <h2 class="text-xl font-bold mb-4">
+                Comments
+            </h2>
+
+            @auth
+                <form method="POST" action="{{ route('comments.store', $post) }}" class="mb-6">
+                    @csrf
+
+                    <textarea name="body" rows="4" class="w-full border rounded-lg p-3" placeholder="Write a comment...">{{ old('body') }}</textarea>
+
+                    @error('body')
+                        <p class="text-red-600 text-sm mt-1">
+                            {{ $message }}
+                        </p>
+                    @enderror
+
+                    <button type="submit" class="mt-2">
+                        Comment
+                    </button>
+                </form>
+            @else
+                <p class="mb-6">
+                    Please log in to comment.
+                </p>
+            @endauth
+
+            @forelse ($post->comments as $comment)
+                <article class="border rounded-lg p-4 mb-3">
+                    <div class="text-sm text-gray-500">
+                        {{ $comment->user->name }}
+                        &middot;
+                        {{ $comment->created_at->diffForHumans() }}
+                    </div>
+
+                    <p class="mt-2">
+                        {{ $comment->body }}
+                    </p>
+                </article>
+            @empty
+                <p>No comments yet.</p>
+            @endforelse
+        </section>
     </div>
 </x-app-layout>

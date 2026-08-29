@@ -1,4 +1,22 @@
 <x-app-layout>
+    <form method="GET" action="{{ route('posts.index') }}" class="mb-6 flex gap-3">
+        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search posts..."
+            class="border rounded px-3 py-2 flex-1">
+
+        <select name="community" class="border rounded px-3 py-2">
+            <option value="">All communities</option>
+
+            @foreach ($communities as $community)
+                <option value="{{ $community->id }}" @selected(request('community') == $community->id)>
+                    {{ $community->name }}
+                </option>
+            @endforeach
+        </select>
+
+        <button type="submit">
+            Search
+        </button>
+    </form>
     <div class="max-w-3xl mx-auto py-8">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold">Forumly</h1>
@@ -37,5 +55,8 @@
         @empty
             <p>No posts yet.</p>
         @endforelse
+        <div class="mt-6">
+            {{ $posts->links() }}
+        </div>
     </div>
 </x-app-layout>
