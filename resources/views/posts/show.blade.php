@@ -6,7 +6,9 @@
 
         <article class="border rounded-lg p-4 mt-4">
             <p class="text-sm">
-                {{ $post->community->name }}
+                <a href="{{ route('communities.show', $post->community) }}">
+                    {{ $post->community->name }}
+                </a>
                 &middot;
                 {{ $post->user->name }}
             </p>

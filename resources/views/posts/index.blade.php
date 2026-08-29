@@ -37,7 +37,9 @@
         @forelse ($posts as $post)
             <article class="border rounded-lg p-4 mb-4">
                 <p class="text-sm">
-                    {{ $post->community->name }}
+                    <a href="{{ route('communities.show', $post->community) }}">
+                        {{ $post->community->name }}
+                    </a>
                     &middot;
                     {{ $post->user->name }}
                 </p>

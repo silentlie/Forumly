@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\CommunityController as AdminCommunityController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VoteController;
@@ -49,3 +51,13 @@ Route::get('/posts/{post}', [PostController::class, 'show'])
 
 Route::get('/posts/{post}/files/{index}', [PostController::class, 'downloadFile'])
     ->name('posts.files.download');
+
+Route::middleware(['auth', 'admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::resource('communities', AdminCommunityController::class)->except(['show']);
+    });
+
+Route::get('/communities/{community}', [CommunityController::class, 'show'])
+    ->name('communities.show');
