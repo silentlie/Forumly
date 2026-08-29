@@ -25,7 +25,9 @@
                 </p>
 
                 <h2 class="text-xl font-semibold">
-                    {{ $post->title }}
+                    <a href="{{ route('posts.show', $post) }}">
+                        {{ $post->title }}
+                    </a>
                 </h2>
 
                 <p class="mt-2">
