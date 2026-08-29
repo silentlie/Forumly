@@ -104,7 +104,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        $post->load(['user', 'community', 'comments.user']);
+        $post->load(['user', 'community', 'comments.user', 'voters',]);
 
         return view('posts.show', compact('post'));
     }

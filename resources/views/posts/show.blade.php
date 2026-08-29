@@ -57,6 +57,23 @@
                     </form>
                 @endcan
             </div>
+
+            <div class="mt-4">
+                @auth
+                    <button type="button"
+                        class="vote-button {{ $post->voters->contains('id', auth()->id()) ? 'font-bold' : '' }}"
+                        data-url="{{ route('posts.vote', $post) }}">
+                        ▲
+                        <span class="vote-count">
+                            {{ $post->voters->count() }}
+                        </span>
+                    </button>
+                @else
+                    <span>
+                        ▲ {{ $post->voters->count() }}
+                    </span>
+                @endauth
+            </div>
         </article>
 
         <section class="mt-8">

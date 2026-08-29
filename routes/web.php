@@ -3,6 +3,7 @@
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\VoteController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/dashboard', function () {
@@ -38,6 +39,9 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/posts/{post}/comments', [CommentController::class, 'store'])
         ->name('comments.store');
+
+    Route::post('/posts/{post}/vote', [VoteController::class, 'toggle'])
+        ->name('posts.vote');
 });
 
 Route::get('/posts/{post}', [PostController::class, 'show'])
