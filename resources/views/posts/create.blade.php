@@ -2,7 +2,7 @@
     <div class="max-w-3xl mx-auto py-8">
         <h1 class="text-2xl font-bold mb-6">Create Post</h1>
 
-        <form method="POST" action="{{ route('posts.store') }}">
+        <form method="POST" action="{{ route('posts.store') }}" enctype="multipart/form-data">
             @csrf
 
             <div class="mb-4">
@@ -37,6 +37,20 @@
                 <textarea id="body" name="body" class="block w-full" rows="8">{{ old('body') }}</textarea>
 
                 @error('body')
+                    <p>{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="mb-4">
+                <label for="files">Attachments</label>
+
+                <input id="files" name="files[]" type="file" multiple class="block w-full">
+
+                @error('files')
+                    <p>{{ $message }}</p>
+                @enderror
+
+                @error('files.*')
                     <p>{{ $message }}</p>
                 @enderror
             </div>

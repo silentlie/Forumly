@@ -38,3 +38,6 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/posts/{post}', [PostController::class, 'show'])
     ->name('posts.show');
+
+Route::get('/posts/{post}/files/{index}', [PostController::class, 'downloadFile'])
+    ->name('posts.files.download');
