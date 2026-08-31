@@ -1,15 +1,10 @@
 <x-app-layout>
     <div class="max-w-3xl mx-auto py-8">
-        <div class="mb-6">
-            <a href="{{ route('communities.show', $community) }}">
-                ← Back to community
-            </a>
-
-            <h1 class="mt-4 text-2xl font-bold">
+        <div class="mb-4">
+            <h1 class="mt-4 text-2xl font-bold text-gray-900">
                 Edit Community
             </h1>
         </div>
-
         <form method="POST" action="{{ route('admin.communities.update', $community) }}" class="space-y-6">
             @csrf
             @method('PATCH')

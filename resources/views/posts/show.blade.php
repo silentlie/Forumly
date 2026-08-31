@@ -1,72 +1,11 @@
 <x-app-layout>
-    <div class="max-w-3xl mx-auto py-8">
-        <a href="{{ route('posts.index') }}">
-            ← Back
-        </a>
+    <div class="mx-auto max-w-3xl py-8">
+        {{-- Post --}}
+        <x-post-card :post="$post" />
 
-        <article class="border rounded-lg p-4 mt-4">
-            <p class="text-sm">
-                <a href="{{ route('communities.show', $post->community) }}">
-                    {{ $post->community->name }}
-                </a>
-                &middot;
-                {{ $post->user->name }}
-            </p>
-
-            <h1 class="text-2xl font-bold mt-2">
-                {{ $post->title }}
-            </h1>
-
-            <p class="mt-4">
-                {{ $post->body }}
-            </p>
-
-            @if (!empty($post->file_paths))
-                <div class="mt-6">
-                    <h2 class="font-semibold">Attachments</h2>
-
-                    <ul>
-                        @foreach ($post->file_paths as $index => $file)
-                            <li>
-                                <a href="{{ route('posts.files.download', [$post, $index]) }}">
-                                    {{ $file['name'] }}
-                                </a>
-
-                                <span class="text-sm text-gray-500">
-                                    ({{ number_format($file['size'] / 1024, 1) }} KB)
-                                </span>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
-            <div class="flex gap-4 mt-6">
-                @can('update', $post)
-                    <a href="{{ route('posts.edit', $post) }}">
-                        Edit
-                    </a>
-                @endcan
-
-                @can('delete', $post)
-                    <form method="POST" action="{{ route('posts.destroy', $post) }}">
-                        @csrf
-                        @method('DELETE')
-
-                        <button type="submit">
-                            Delete
-                        </button>
-                    </form>
-                @endcan
-            </div>
-
-            <div class="mt-4">
-                <x-vote-button :post="$post" :count="$post->voters_count" :voted="$post->has_voted ?? false" />
-            </div>
-        </article>
-
+        {{-- Comments --}}
         <section class="mt-8">
-            <h2 class="text-xl font-bold mb-4">
+            <h2 class="mb-4 text-xl font-bold text-gray-900">
                 Comments
             </h2>
 
@@ -74,39 +13,58 @@
                 <form method="POST" action="{{ route('comments.store', $post) }}" class="mb-6">
                     @csrf
 
-                    <textarea name="body" rows="4" class="w-full border rounded-lg p-3" placeholder="Write a comment...">{{ old('body') }}</textarea>
+                    <textarea name="body" rows="4"
+                        class="w-full rounded-xl border border-gray-300 bg-white p-4
+                            shadow-sm transition
+                            focus:border-gray-500 focus:ring-gray-500"
+                        placeholder="Write a comment...">{{ old('body') }}</textarea>
 
                     @error('body')
-                        <p class="text-red-600 text-sm mt-1">
+                        <p class="mt-1 text-sm text-red-600">
                             {{ $message }}
                         </p>
                     @enderror
 
-                    <button type="submit" class="mt-2">
+                    <button type="submit"
+                        class="mt-2 cursor-pointer rounded-lg bg-gray-900 px-4 py-2
+                            text-sm font-semibold text-white shadow-sm transition
+                            hover:bg-gray-700 active:bg-gray-950">
                         Comment
                     </button>
                 </form>
             @else
-                <p class="mb-6">
-                    Please log in to comment.
+                <p class="mb-6 text-gray-600">
+                    <a href="{{ route('login', ['redirect' => request()->getRequestUri()]) }}"
+                        class="font-medium text-gray-900 hover:underline">
+                        Log in
+                    </a>
+                    to comment.
                 </p>
             @endauth
 
-            @forelse ($post->comments as $comment)
-                <article class="border rounded-lg p-4 mb-3">
-                    <div class="text-sm text-gray-500">
-                        {{ $comment->user->name }}
-                        &middot;
-                        {{ $comment->created_at->diffForHumans() }}
-                    </div>
+            <div class="space-y-3">
+                @forelse ($post->comments as $comment)
+                    <article
+                        class="rounded-xl border border-gray-200 bg-white p-4
+                            shadow-sm">
+                        <div class="text-sm text-gray-500">
+                            {{ $comment->user->name }}
 
-                    <p class="mt-2">
-                        {{ $comment->body }}
+                            <span class="mx-1">&middot;</span>
+
+                            {{ $comment->created_at->diffForHumans() }}
+                        </div>
+
+                        <p class="mt-2 leading-relaxed text-gray-700">
+                            {{ $comment->body }}
+                        </p>
+                    </article>
+                @empty
+                    <p class="text-gray-500">
+                        No comments yet.
                     </p>
-                </article>
-            @empty
-                <p>No comments yet.</p>
-            @endforelse
+                @endforelse
+            </div>
         </section>
     </div>
 </x-app-layout>

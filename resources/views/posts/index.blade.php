@@ -35,45 +35,7 @@
         @endif
 
         @forelse ($posts as $post)
-            <article
-                class="mb-5 rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition duration-200 hover:border-gray-300 hover:shadow-md">
-                {{-- Top row --}}
-                <div class="flex items-start justify-between gap-4">
-                    <div class="min-w-0">
-                        <a href="{{ route('communities.show', $post->community) }}"
-                            class="text-sm font-medium text-gray-600
-                        transition hover:text-gray-900 hover:underline
-                        underline-offset-2">
-                            {{ $post->community->name }}
-                        </a>
-
-                        <p class="mt-1 text-sm text-gray-500">
-                            {{ $post->user->name }}
-
-                            <span class="mx-1">&middot;</span>
-
-                            {{ $post->created_at->diffForHumans() }}
-                        </p>
-                    </div>
-
-                    <x-vote-button :post="$post" :count="$post->voters_count" :voted="$post->has_voted ?? false" />
-                </div>
-
-                {{-- Post content --}}
-                <div class="mt-3">
-                    <h2 class="text-xl font-semibold text-gray-900">
-                        <a href="{{ route('posts.show', $post) }}"
-                            class="transition hover:text-gray-600 hover:underline
-                        decoration-2 underline-offset-4">
-                            {{ $post->title }}
-                        </a>
-                    </h2>
-
-                    <p class="mt-2 leading-relaxed text-gray-700">
-                        {{ $post->body }}
-                    </p>
-                </div>
-            </article>
+            <x-post-card :post="$post" class="mb-5" />
         @empty
             @if (request('search'))
                 <p>

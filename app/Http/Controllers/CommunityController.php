@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Community;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class CommunityController extends Controller
@@ -59,8 +60,19 @@ class CommunityController extends Controller
      */
     public function show(Community $community)
     {
-        $posts = $community->posts()
-            ->with('user')
+        $query = $community->posts()
+            ->with(['user', 'community'])
+            ->withCount('voters');
+
+        if (Auth::check()) {
+            $query->withExists([
+                'voters as has_voted' => function ($query) {
+                    $query->whereKey(Auth::id());
+                },
+            ]);
+        }
+
+        $posts = $query
             ->latest()
             ->paginate(10);
 
