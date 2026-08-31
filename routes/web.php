@@ -43,6 +43,12 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/posts/{post}/vote', [VoteController::class, 'toggle'])
         ->name('posts.vote');
+
+    Route::get(
+        '/communities/{community}/posts/create',
+        [PostController::class, 'createForCommunity']
+    )
+        ->name('communities.posts.create');
 });
 
 Route::get('/posts/{post}', [PostController::class, 'show'])

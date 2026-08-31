@@ -234,4 +234,9 @@ class PostController extends Controller
             $file['name']
         );
     }
+
+    public function createForCommunity(Community $community)
+    {
+        return view('posts.create', compact('community'));
+    }
 }
