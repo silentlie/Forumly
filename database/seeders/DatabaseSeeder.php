@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Comment;
 use App\Models\Community;
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -11,36 +13,48 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $admin = User::factory()->admin()->create([
+            'name' => 'Admin',
+            'email' => 'admin@example.com',
         ]);
 
-        Community::factory()->create([
-            'name' => 'General',
-            'description' => 'General discussion about anything that does not fit into another community.',
+        $demoUser = User::factory()->create([
+            'name' => 'User',
+            'email' => 'user@example.com',
         ]);
 
-        Community::factory()->create([
-            'name' => 'Programming',
-            'description' => 'Discuss programming, software development, frameworks, tools, and coding.',
-        ]);
+        $users = User::factory(
+            fake()->numberBetween(10, 30)
+        )->create();
 
-        Community::factory()->create([
-            'name' => 'Gaming',
-            'description' => 'Discuss games, gaming news, recommendations, and related topics.',
-        ]);
+        $users->push($admin, $demoUser);
 
-        Community::factory()->create([
-            'name' => 'University',
-            'description' => 'Discuss university life, study, courses, assignments, and student experiences.',
-        ]);
+        $communities = Community::factory(
+            fake()->numberBetween(4, 10)
+        )->create();
+
+        foreach ($communities as $community) {
+            $posts = Post::factory(
+                fake()->numberBetween(5, 20)
+            )
+                ->for($community)
+                ->state(fn(array $attributes) => [
+                    'user_id' => $users->random()->id,
+                ])
+                ->create();
+
+            foreach ($posts as $post) {
+                Comment::factory(
+                    fake()->numberBetween(0, 15)
+                )
+                    ->for($post)
+                    ->state(fn(array $attributes) => [
+                        'user_id' => $users->random()->id,
+                    ])
+                    ->create();
+            }
+        }
     }
 }

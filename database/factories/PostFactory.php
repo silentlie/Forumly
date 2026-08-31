@@ -2,7 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Community;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,7 +20,11 @@ class PostFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'user_id' => User::factory(),
+            'community_id' => Community::factory(),
+            'title' => fake()->sentence(),
+            'body' => fake()->paragraphs(3, true),
+            'file_paths' => [],
         ];
     }
 }
