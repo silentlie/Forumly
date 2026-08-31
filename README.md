@@ -1,58 +1,376 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Forumly
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Forumly is a lightweight community discussion forum built with Laravel.
 
-## About Laravel
+The project is inspired by Reddit's core discussion model while deliberately keeping the scope small and focused. Users can browse communities, create posts, attach files, comment, vote on posts, search discussions, and manage their own content.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+The application demonstrates Laravel MVC, Eloquent relationships, authentication, authorization, middleware, file handling, AJAX interactions, automated testing, and responsive Blade UI.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Authentication
 
-## Learning Laravel
+* User registration
+* Login and logout
+* Profile management
+* Password reset and email verification support
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Communities
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+* Browse available communities
+* View posts belonging to a community
+* Create posts directly inside a community
+* Admin-only community management
+* Create, edit, and delete communities
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+### Posts
 
-## Agentic Development
+Users can:
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+* Create posts
+* View posts
+* Edit their own posts
+* Delete their own posts
+* Select which community a post belongs to
 
-```bash
-composer require laravel/boost --dev
+Post ownership is enforced server-side using Laravel policies.
 
-php artisan boost:install
+### Multi-file attachments
+
+Posts support optional general-purpose file attachments.
+
+Users can:
+
+* Upload multiple files when creating a post
+* Add additional files while editing a post
+* Remove existing attachments
+* Download attachments from posts
+
+Each uploaded file stores metadata including:
+
+* Original filename
+* Storage path
+* MIME type
+* File size
+
+Individual files are currently limited to **10 MB**.
+
+### Comments
+
+Authenticated users can leave comments on posts.
+
+Comments are intentionally kept flat rather than using nested Reddit-style comment threads.
+
+### Voting
+
+Forumly uses a simple upvote system.
+
+A user can:
+
+* Upvote a post
+* Click again to remove their vote
+
+The relationship between users and voted posts is implemented as a many-to-many relationship through the `votes` table.
+
+### Asynchronous voting
+
+Voting uses JavaScript `fetch()` to update the vote without reloading the page.
+
+The flow is:
+
+```text
+User clicks vote
+      ↓
+JavaScript fetch()
+      ↓
+Laravel vote endpoint
+      ↓
+Vote stored/removed
+      ↓
+JSON response
+      ↓
+Vote count updated in the page
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### Search
 
-## Contributing
+The post feed supports searching by:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+* Any field
+* Post title
+* Post body
+* Title and body
+* Author
 
-## Code of Conduct
+Search results are paginated and Laravel preserves the current query parameters while navigating between pages.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Roles and authorization
 
-## Security Vulnerabilities
+Forumly currently supports two roles:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```text
+user
+admin
+```
+
+Normal users can:
+
+* Create posts
+* Edit/delete their own posts
+* Comment
+* Vote
+
+Administrators can additionally manage communities.
+
+Admin functionality is protected by Laravel middleware.
+
+## Technology
+
+Forumly is built with:
+
+* PHP
+* Laravel
+* Blade
+* Eloquent ORM
+* SQLite
+* Tailwind CSS
+* Alpine.js
+* Vanilla JavaScript `fetch()`
+* Vite
+* PHPUnit
+* GitHub Actions
+
+Heroicons are used throughout the interface.
+
+## Database structure
+
+Forumly uses five main application tables:
+
+```text
+users
+communities
+posts
+comments
+votes
+```
+
+The main relationships are:
+
+```text
+User
+ ├── has many Posts
+ ├── has many Comments
+ └── belongs to many Posts through Votes
+
+Community
+ └── has many Posts
+
+Post
+ ├── belongs to User
+ ├── belongs to Community
+ ├── has many Comments
+ └── belongs to many Users through Votes
+
+Comment
+ ├── belongs to User
+ └── belongs to Post
+
+Vote
+ ├── belongs to User
+ └── belongs to Post
+```
+
+Post attachment metadata is stored in the post's `file_paths` JSON field rather than requiring a separate attachment table.
+
+## Project structure
+
+Important application files are organised using conventional Laravel structure:
+
+```text
+app/
+├── Http/
+│   ├── Controllers/
+│   │   ├── CommentController.php
+│   │   ├── CommunityController.php
+│   │   ├── PostController.php
+│   │   └── VoteController.php
+│   │
+│   └── Middleware/
+│       └── AdminMiddleware.php
+│
+├── Models/
+│   ├── Comment.php
+│   ├── Community.php
+│   ├── Post.php
+│   ├── User.php
+│   └── Vote.php
+│
+└── Policies/
+    └── PostPolicy.php
+
+resources/
+├── js/
+│   └── app.js
+│
+└── views/
+    ├── communities/
+    ├── components/
+    ├── layouts/
+    └── posts/
+
+tests/
+└── Feature/
+    ├── AdminTest.php
+    ├── AttachmentTest.php
+    ├── PostTest.php
+    └── VoteTest.php
+```
+
+## Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/silentlie/Forumly.git
+cd Forumly
+```
+
+Install PHP dependencies:
+
+```bash
+composer install
+```
+
+Install frontend dependencies:
+
+```bash
+npm install
+```
+
+Create the environment file:
+
+```bash
+cp .env.example .env
+```
+
+Generate the Laravel application key:
+
+```bash
+php artisan key:generate
+```
+
+Create the SQLite database if it does not already exist:
+
+```bash
+touch database/database.sqlite
+```
+
+On Windows PowerShell:
+
+```powershell
+New-Item database/database.sqlite -ItemType File
+```
+
+Run the migrations and seed demo data:
+
+```bash
+php artisan migrate --seed
+```
+
+Start the development environment:
+
+```bash
+composer dev
+```
+
+Alternatively, Laravel and Vite can be run separately:
+
+```bash
+php artisan serve
+```
+
+and:
+
+```bash
+npm run dev
+```
+
+## Testing
+
+Run the automated test suite with:
+
+```bash
+composer test
+```
+
+The feature tests cover important behaviour including:
+
+* Authenticated post creation
+* Post validation
+* Post ownership authorization
+* Scoped post searching
+* Vote toggling
+* Guest vote protection
+* Admin authorization
+* Admin community management
+* Multiple attachment uploads
+* Attachment removal
+
+## Continuous integration
+
+GitHub Actions automatically:
+
+1. Checks out the repository
+2. Configures PHP
+3. Installs Composer dependencies
+4. Creates the Laravel environment
+5. Installs frontend dependencies
+6. Builds the frontend
+7. Runs the automated test suite
+
+This helps ensure committed changes continue to build and pass the application's tests.
+
+## Security and authorization
+
+Forumly does not rely only on hiding controls in the interface.
+
+Laravel policies protect post modification on the server:
+
+```text
+Post owner
+    ├── can edit
+    └── can delete
+
+Other users
+    ├── cannot edit
+    └── cannot delete
+```
+
+Admin functionality is separately protected using authentication and admin middleware.
+
+Uploaded files are stored through Laravel's filesystem rather than being exposed directly through user-controlled paths.
+
+## Scope
+
+Forumly intentionally focuses on a small, complete forum rather than attempting to reproduce every Reddit feature.
+
+The project does not currently include:
+
+* Tags
+* Nested comment threads
+* Downvotes
+* Karma
+* Private messaging
+* Notifications
+* Recommendation algorithms
+* WebSockets
+* Realtime chat
+* Complex moderation systems
+
+This keeps the application focused while still demonstrating the main concepts of a modern Laravel web application.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Forumly was created as a university web application development project.
+
+Laravel and its dependencies remain subject to their respective licences.
