@@ -30,17 +30,40 @@ class PostController extends Controller
 
         if ($request->filled('search')) {
             $search = $request->search;
+            $searchIn = $request->input('search_in', 'any');
 
-            $query->where(function ($query) use ($search) {
-                $query
-                    ->where('title', 'like', "%{$search}%")
-                    ->orWhere('body', 'like', "%{$search}%")
-                    ->orWhereHas('user', function ($query) use ($search) {
-                        $query->where('name', 'like', "%{$search}%");
-                    })
-                    ->orWhereHas('community', function ($query) use ($search) {
-                        $query->where('name', 'like', "%{$search}%");
-                    });
+            $query->where(function ($query) use ($search, $searchIn) {
+                switch ($searchIn) {
+                    case 'title':
+                        $query->where('title', 'like', "%{$search}%");
+                        break;
+
+                    case 'body':
+                        $query->where('body', 'like', "%{$search}%");
+                        break;
+
+                    case 'title_body':
+                        $query
+                            ->where('title', 'like', "%{$search}%")
+                            ->orWhere('body', 'like', "%{$search}%");
+                        break;
+
+                    case 'author':
+                        $query->whereHas('user', function ($query) use ($search) {
+                            $query->where('name', 'like', "%{$search}%");
+                        });
+                        break;
+
+                    case 'any':
+                    default:
+                        $query
+                            ->where('title', 'like', "%{$search}%")
+                            ->orWhere('body', 'like', "%{$search}%")
+                            ->orWhereHas('user', function ($query) use ($search) {
+                                $query->where('name', 'like', "%{$search}%");
+                            });
+                        break;
+                }
             });
         }
 

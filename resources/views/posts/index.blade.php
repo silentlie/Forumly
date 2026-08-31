@@ -1,17 +1,44 @@
 <x-app-layout>
     <div class="mb-6 flex flex-col gap-3 sm:flex-row">
         <form method="GET" action="{{ route('posts.index') }}" class="flex min-w-0 flex-1 gap-2">
-            <input type="text" name="search" value="{{ request('search') }}"
-                placeholder="Search posts, users or communities..."
-                class="min-w-0 flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2
-                shadow-sm transition
-                focus:border-gray-500 focus:ring-gray-500">
+
+            <select name="search_in" aria-label="Search in"
+                class="rounded-lg border border-gray-300 bg-white px-3 py-2
+               text-sm text-gray-700 shadow-sm
+               focus:border-gray-500 focus:ring-gray-500">
+
+                <option value="any" @selected(request('search_in', 'any') === 'any')>
+                    Any
+                </option>
+
+                <option value="title" @selected(request('search_in') === 'title')>
+                    Post title
+                </option>
+
+                <option value="body" @selected(request('search_in') === 'body')>
+                    Post body
+                </option>
+
+                <option value="title_body" @selected(request('search_in') === 'title_body')>
+                    Title + body
+                </option>
+
+                <option value="author" @selected(request('search_in') === 'author')>
+                    Author name
+                </option>
+            </select>
+
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search posts..."
+                class="min-w-0 flex-1 rounded-lg border border-gray-300 bg-white
+               px-3 py-2 shadow-sm transition
+               focus:border-gray-500 focus:ring-gray-500">
 
             <button type="submit"
-                class="cursor-pointer rounded-lg border border-gray-300 bg-white px-4 py-2
-                text-sm font-semibold text-gray-700 shadow-sm transition
-                hover:bg-gray-50 hover:text-gray-900
-                active:bg-gray-100">
+                class="cursor-pointer rounded-lg border border-gray-300 bg-white
+               px-4 py-2 text-sm font-semibold text-gray-700
+               shadow-sm transition
+               hover:bg-gray-50 hover:text-gray-900
+               active:bg-gray-100">
                 Search
             </button>
         </form>
