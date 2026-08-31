@@ -84,13 +84,13 @@
                                             class="inline-flex h-9 w-9 shrink-0
                                                 cursor-pointer items-center justify-center
                                                 rounded-full border border-gray-300
-                                                bg-gray-100 text-lg font-semibold
+                                                bg-gray-100
                                                 text-gray-600 shadow-sm transition
                                                 hover:border-gray-400
                                                 hover:bg-gray-200
                                                 hover:text-gray-900
                                                 active:scale-95">
-                                            ⋯
+                                            <x-heroicon-o-ellipsis-horizontal class="h-5 w-5" />
                                         </button>
                                     </x-slot>
 
