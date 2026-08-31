@@ -71,7 +71,7 @@ class PostController extends Controller
             'community_id' => ['required', 'exists:communities,id'],
             'title' => ['required', 'string', 'max:255'],
             'body' => ['required', 'string'],
-            'files' => ['nullable', 'array', 'max:5'],
+            'files' => ['nullable', 'array'],
             'files.*' => ['file', 'max:10240'],
         ]);
 
@@ -155,7 +155,7 @@ class PostController extends Controller
             'community_id' => ['required', 'exists:communities,id'],
             'title' => ['required', 'string', 'max:255'],
             'body' => ['required', 'string'],
-            'files' => ['nullable', 'array', 'max:5'],
+            'files' => ['nullable', 'array'],
             'files.*' => ['file', 'max:10240'],
             'remove_files' => ['nullable', 'array'],
             'remove_files.*' => ['integer'],

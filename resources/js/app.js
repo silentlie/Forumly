@@ -21,7 +21,7 @@ Alpine.data('filePicker', () => {
                         existing.lastModified === file.lastModified,
                 );
 
-                if (!alreadyAdded && selectedFiles.length < 5) {
+                if (!alreadyAdded) {
                     selectedFiles.push(file);
                 }
             });
