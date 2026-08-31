@@ -19,25 +19,27 @@ class PostController extends Controller
         $query = Post::with(['user', 'community']);
 
         if ($request->filled('search')) {
-            $query->where(function ($query) use ($request) {
-                $query->where('title', 'like', '%' . $request->search . '%')
-                    ->orWhere('body', 'like', '%' . $request->search . '%');
-            });
-        }
+            $search = $request->search;
 
-        if ($request->filled('community')) {
-            $query->where('community_id', $request->community);
+            $query->where(function ($query) use ($search) {
+                $query
+                    ->where('title', 'like', "%{$search}%")
+                    ->orWhere('body', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($query) use ($search) {
+                        $query->where('name', 'like', "%{$search}%");
+                    })
+                    ->orWhereHas('community', function ($query) use ($search) {
+                        $query->where('name', 'like', "%{$search}%");
+                    });
+            });
         }
 
         $posts = $query
             ->latest()
-            // ! Hardcoded pagination value, maybe moving to a config file or query parameter
             ->paginate(10)
             ->withQueryString();
 
-        $communities = Community::orderBy('name')->get();
-
-        return view('posts.index', compact('posts', 'communities'));
+        return view('posts.index', compact('posts'));
     }
 
     /**
@@ -59,7 +61,6 @@ class PostController extends Controller
             'community_id' => ['required', 'exists:communities,id'],
             'title' => ['required', 'string', 'max:255'],
             'body' => ['required', 'string'],
-            // ! Hardcoded file validation rules, maybe moving to a config file or using a custom validation rule
             'files' => ['nullable', 'array', 'max:5'],
             'files.*' => ['file', 'max:10240'],
         ]);
@@ -130,7 +131,6 @@ class PostController extends Controller
             'community_id' => ['required', 'exists:communities,id'],
             'title' => ['required', 'string', 'max:255'],
             'body' => ['required', 'string'],
-            // ! Hardcoded file validation rules, maybe moving to a config file or using a custom validation rule
             'files' => ['nullable', 'array', 'max:5'],
             'files.*' => ['file', 'max:10240'],
             'remove_files' => ['nullable', 'array'],

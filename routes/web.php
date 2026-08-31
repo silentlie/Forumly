@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\CommunityController as AdminCommunityController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\PostController;
@@ -56,8 +55,18 @@ Route::middleware(['auth', 'admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-        Route::resource('communities', AdminCommunityController::class)->except(['show']);
+        Route::resource('communities', CommunityController::class)
+            ->only([
+                'create',
+                'store',
+                'edit',
+                'update',
+                'destroy',
+            ]);
     });
+
+Route::get('/communities', [CommunityController::class, 'index'])
+    ->name('communities.index');
 
 Route::get('/communities/{community}', [CommunityController::class, 'show'])
     ->name('communities.show');
