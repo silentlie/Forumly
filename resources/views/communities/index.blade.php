@@ -39,7 +39,7 @@
                             shadow-sm transition
                             hover:bg-gray-700
                             active:bg-gray-950">
-                        <span class="me-1 text-lg leading-none">+</span>
+                        <x-heroicon-o-plus class="h-4 w-4" />
                         Create Community
                     </a>
                 @endif

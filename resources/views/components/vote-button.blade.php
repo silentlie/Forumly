@@ -24,7 +24,7 @@
             aria-pressed:border-gray-900
             aria-pressed:bg-gray-900
             aria-pressed:text-white">
-        <span class="text-xs">▲</span>
+        <x-heroicon-s-arrow-up class="h-4 w-4" />
 
         <span class="vote-count">
             {{ $count }}
@@ -41,9 +41,9 @@
             hover:border-gray-400 hover:bg-gray-200
             hover:text-gray-950 hover:shadow
             active:scale-95">
-        <span class="text-xs">▲</span>
+        <x-heroicon-s-arrow-up class="h-4 w-4" />
 
-        <span>
+        <span class="vote-count">
             {{ $count }}
         </span>
     </a>

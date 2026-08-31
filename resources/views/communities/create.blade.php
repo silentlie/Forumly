@@ -1,11 +1,7 @@
 <x-app-layout>
     <div class="max-w-3xl mx-auto py-8">
         <div class="mb-6">
-            <a href="{{ route('communities.index') }}">
-                ← Back to communities
-            </a>
-
-            <h1 class="mt-4 text-2xl font-bold">
+            <h1 class="text-2xl font-bold">
                 Create Community
             </h1>
         </div>

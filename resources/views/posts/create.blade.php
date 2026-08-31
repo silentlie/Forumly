@@ -95,12 +95,13 @@
 
                     <div class="mt-2 flex flex-wrap items-center gap-2">
                         <label for="files"
-                            class="inline-flex cursor-pointer items-center
-                                rounded-lg border border-gray-300
-                                bg-white px-3 py-2
-                                text-sm font-medium text-gray-700
-                                transition hover:bg-gray-50">
-                            + Choose files
+                            class="inline-flex cursor-pointer items-center gap-1.5
+        rounded-lg border border-gray-300 bg-white
+        px-3 py-2 text-sm font-medium text-gray-700
+        transition hover:bg-gray-50">
+                            <x-heroicon-o-plus class="h-4 w-4" />
+
+                            Choose files
                         </label>
 
                         <input x-ref="fileInput" id="files" name="files[]" type="file" multiple class="hidden"
@@ -118,9 +119,9 @@
 
                                 <button type="button" aria-label="Remove attachment"
                                     class="cursor-pointer text-gray-400
-                                        transition hover:text-red-600"
+        transition hover:text-red-600"
                                     @click="removeFile(index)">
-                                    ×
+                                    <x-heroicon-o-x-mark class="h-4 w-4" />
                                 </button>
                             </span>
                         </template>
