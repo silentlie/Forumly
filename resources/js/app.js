@@ -28,7 +28,7 @@ document.querySelectorAll('.vote-button').forEach((button) => {
 
             button.querySelector('.vote-count').textContent = data.count;
 
-            button.classList.toggle('font-bold', data.voted);
+            button.setAttribute('aria-pressed', data.voted ? 'true' : 'false');
         } finally {
             button.disabled = false;
         }

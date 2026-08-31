@@ -40,9 +40,15 @@ class DatabaseSeeder extends Seeder
                 fake()->numberBetween(5, 20)
             )
                 ->for($community)
-                ->state(fn(array $attributes) => [
-                    'user_id' => $users->random()->id,
-                ])
+                ->state(function (array $attributes) use ($users) {
+                    $createdAt = fake()->dateTimeBetween('-3 months', 'now');
+
+                    return [
+                        'user_id' => $users->random()->id,
+                        'created_at' => $createdAt,
+                        'updated_at' => $createdAt,
+                    ];
+                })
                 ->create();
 
             foreach ($posts as $post) {
@@ -50,9 +56,18 @@ class DatabaseSeeder extends Seeder
                     fake()->numberBetween(0, 15)
                 )
                     ->for($post)
-                    ->state(fn(array $attributes) => [
-                        'user_id' => $users->random()->id,
-                    ])
+                    ->state(function (array $attributes) use ($users, $post) {
+                        $createdAt = fake()->dateTimeBetween(
+                            $post->created_at,
+                            'now'
+                        );
+
+                        return [
+                            'user_id' => $users->random()->id,
+                            'created_at' => $createdAt,
+                            'updated_at' => $createdAt,
+                        ];
+                    })
                     ->create();
             }
         }

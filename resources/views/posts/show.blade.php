@@ -61,20 +61,7 @@
             </div>
 
             <div class="mt-4">
-                @auth
-                    <button type="button"
-                        class="vote-button {{ $post->voters->contains('id', auth()->id()) ? 'font-bold' : '' }}"
-                        data-url="{{ route('posts.vote', $post) }}">
-                        ▲
-                        <span class="vote-count">
-                            {{ $post->voters->count() }}
-                        </span>
-                    </button>
-                @else
-                    <span>
-                        ▲ {{ $post->voters->count() }}
-                    </span>
-                @endauth
+                <x-vote-button :post="$post" :count="$post->voters_count" :voted="$post->has_voted ?? false" />
             </div>
         </article>
 

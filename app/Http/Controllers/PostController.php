@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Community;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
@@ -16,7 +17,16 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Post::with(['user', 'community']);
+        $query = Post::with(['user', 'community'])
+            ->withCount('voters');
+
+        if (Auth::check()) {
+            $query->withExists([
+                'voters as has_voted' => function ($query) {
+                    $query->whereKey(Auth::id());
+                },
+            ]);
+        }
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -105,7 +115,21 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        $post->load(['user', 'community', 'comments.user', 'voters',]);
+        $post->load([
+            'user',
+            'community',
+            'comments.user',
+        ]);
+
+        $post->loadCount('voters');
+
+        if (Auth::check()) {
+            $post->loadExists([
+                'voters as has_voted' => function ($query) {
+                    $query->whereKey(Auth::id());
+                },
+            ]);
+        }
 
         return view('posts.show', compact('post'));
     }
