@@ -22,6 +22,10 @@
                         {{ __('Communities') }}
                     </x-nav-link>
 
+                    <x-nav-link :href="route('about')" :active="request()->routeIs('about')">
+                        {{ __('About') }}
+                    </x-nav-link>
+
                     <button type="button" @click="$dispatch('open-forumly-guide')"
                         class="cursor-pointer text-sm font-medium text-gray-500
                transition hover:text-gray-700">
@@ -42,8 +46,8 @@
                                 <svg class="ms-1 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0
-                                                                                            111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0
-                                                                                            010-1.414z"
+                                                                                                    111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0
+                                                                                                    010-1.414z"
                                         clip-rule="evenodd" />
                                 </svg>
                             </button>
@@ -101,6 +105,10 @@
         <div class="space-y-1 pb-3 pt-2">
             <x-responsive-nav-link :href="route('communities.index')" :active="request()->routeIs('communities.*', 'admin.communities.*')">
                 {{ __('Communities') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('about')" :active="request()->routeIs('about')">
+                {{ __('About') }}
             </x-responsive-nav-link>
 
             <button type="button"

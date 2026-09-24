@@ -76,3 +76,6 @@ Route::get('/communities', [CommunityController::class, 'index'])
 
 Route::get('/communities/{community}', [CommunityController::class, 'show'])
     ->name('communities.show');
+
+Route::view('/about', 'about')
+    ->name('about');
