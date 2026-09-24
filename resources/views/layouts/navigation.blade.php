@@ -17,10 +17,16 @@
                 </div>
 
                 {{-- Navigation --}}
-                <div class="hidden space-x-8 sm:ms-10 sm:flex">
+                <div class="hidden items-center space-x-8 sm:ms-10 sm:flex">
                     <x-nav-link :href="route('communities.index')" :active="request()->routeIs('communities.*', 'admin.communities.*')">
                         {{ __('Communities') }}
                     </x-nav-link>
+
+                    <button type="button" @click="$dispatch('open-forumly-guide')"
+                        class="cursor-pointer text-sm font-medium text-gray-500
+               transition hover:text-gray-700">
+                        How Forumly works
+                    </button>
                 </div>
             </div>
 
@@ -36,8 +42,9 @@
                                 <svg class="ms-1 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0
-                                                                            111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0
-                                                                            010-1.414z" clip-rule="evenodd" />
+                                                                                            111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0
+                                                                                            010-1.414z"
+                                        clip-rule="evenodd" />
                                 </svg>
                             </button>
                         </x-slot>
@@ -95,6 +102,18 @@
             <x-responsive-nav-link :href="route('communities.index')" :active="request()->routeIs('communities.*', 'admin.communities.*')">
                 {{ __('Communities') }}
             </x-responsive-nav-link>
+
+            <button type="button"
+                @click="
+                $dispatch('open-forumly-guide');
+                open = false;
+            "
+                class="block w-full cursor-pointer px-4 py-2
+                   text-start text-base font-medium
+                   text-gray-600 transition
+                   hover:bg-gray-50 hover:text-gray-800">
+                How Forumly works
+            </button>
         </div>
 
         <div class="border-t border-gray-200 pb-3 pt-4">
